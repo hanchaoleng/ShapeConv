@@ -1,0 +1,13 @@
+matplotlib
+numpy
+pandas
+opencv-python
+addict
+six
+torch>=1.7.0
+torchvision>=0.8.0
+albumentations>=0.4.1
+terminaltables
+pillow
+scipy
+h5py
