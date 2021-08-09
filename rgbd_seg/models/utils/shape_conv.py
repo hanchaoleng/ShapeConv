@@ -12,7 +12,7 @@ from torch.nn.parameter import Parameter
 from torch.nn.modules.module import Module
 
 
-class ShapeConv2d(Module):  # ShapeConv setting4 shape (s,s,i) base(1)
+class ShapeConv2d(Module):
     """
        ShapeConv2d can be used as an alternative for torch.nn.Conv2d.
     """
@@ -48,23 +48,17 @@ class ShapeConv2d(Module):  # ShapeConv setting4 shape (s,s,i) base(1)
         self.padding_mode = padding_mode
         self._padding_repeated_twice = tuple(x for x in self.padding for _ in range(2))
         self.testing = testing
-        # print("self.testing", self.testing)
 
-        #################################### Initailization of D & W ###################################
         M = self.kernel_size[0]
         N = self.kernel_size[1]
         self.D_mul = M * N if D_mul is None or M * N <= 1 else D_mul
-        # self.weight = Parameter(torch.Tensor(out_channels, in_channels // groups, self.D_mul))
         self.weight = Parameter(torch.Tensor(out_channels, in_channels // groups, M, N))
         init.kaiming_uniform_(self.weight, a=math.sqrt(5))
 
         if M * N > 1:
-            # self.D = Parameter(torch.Tensor(in_channels, M * N, self.D_mul))
             self.Shape = Parameter(torch.Tensor(in_channels, M * N, self.D_mul))
-            # self.Shape = Parameter(torch.Tensor(1, M * N, self.D_mul))
             self.Base = Parameter(torch.Tensor(1))
             init_zero = np.zeros([in_channels, M * N, self.D_mul], dtype=np.float32)
-            # init_zero = np.zeros([1, M * N, self.D_mul], dtype=np.float32)
 
             init_one = np.ones([1], dtype=np.float32)
             self.Shape.data = torch.from_numpy(init_zero)
@@ -72,14 +66,11 @@ class ShapeConv2d(Module):  # ShapeConv setting4 shape (s,s,i) base(1)
 
             eye = torch.reshape(torch.eye(M * N, dtype=torch.float32), (1, M * N, M * N))
             D_diag = eye.repeat((in_channels, 1, self.D_mul // (M * N)))
-            # D_diag = eye.repeat((1, 1, self.D_mul // (M * N)))
             if self.D_mul % (M * N) != 0:  # the cases when D_mul > M * N
-                # zeros = torch.zeros([in_channels, M * N, self.D_mul % (M * N)])
                 zeros = torch.zeros([1, M * N, self.D_mul % (M * N)])
                 self.D_diag = Parameter(torch.cat([D_diag, zeros], dim=2), requires_grad=False)
             else:  # the case when D_mul = M * N
                 self.D_diag = Parameter(D_diag, requires_grad=False)
-        ##################################################################################################
 
         if bias:
             self.bias = Parameter(torch.Tensor(out_channels))
@@ -118,35 +109,19 @@ class ShapeConv2d(Module):  # ShapeConv setting4 shape (s,s,i) base(1)
                         self.padding, self.dilation, self.groups)
 
     def compute_shape_w(self, DW_shape):
-        ######################### Compute ShapeW #################
         # (input_channels, D_mul, M * N)
         Shape = self.Shape + self.D_diag  # (1, M * N, self.D_mul)
-        # print(self.Shape.size(), self.D_diag.size())
-        # Shape = torch.reshape(Shape, (M * N, self.D_mul))
         Base = self.Base
         W = torch.reshape(self.weight, (self.out_channels // self.groups, self.in_channels, self.D_mul))
-
-        # W_base = torch.mean(W, [0, 1], keepdims=True)  # (self.D_mul)
         W_base = torch.mean(W, [2], keepdims=True)  # (self.out_channels // self.groups, self.in_channels)
-
-        # W_std = torch.std(W, [0, 1], keepdims=True)  # (self.D_mul)
-
-        #
-        # W_shape = (W - W_base) / std
-
         W_shape = W - W_base  # (self.out_channels // self.groups, self.in_channels, self.D_mul)
-        # print(W_base.size(), W_shape.size(), W.size())
-        # torch.Size([64, 6, 1]) torch.Size([64, 6, 49]) torch.Size([64, 6, 49])
 
         # einsum outputs (out_channels // groups, in_channels, M * N),
         # which is reshaped to
         # (out_channels, in_channels // groups, M, N)
         D_shape = torch.reshape(torch.einsum('ims,ois->oim', Shape, W_shape), DW_shape)
-        # D_shape = torch.reshape(torch.einsum('ms,ois->oim', Shape, W_shape), DW_shape)
-        # D_base = torch.reshape(W_base * Base, (1, 1, M, N))
         D_base = torch.reshape(W_base * Base, (self.out_channels, self.in_channels // self.groups, 1, 1))
         DW = D_shape + D_base
-        #######################################################
         return DW
 
     def forward(self, input):
