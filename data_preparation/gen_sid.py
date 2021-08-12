@@ -176,21 +176,21 @@ def main(dir_in, dir_out, cpus):
     train_list, test_list = save_list(dir_in, dir_out)
     area_names = train_list + test_list
     print('area_names', len(area_names))
-    # save_imgs(dir_in, area_names, dir_out)
-    # save_depth(dir_in, area_names, dir_out)
+    save_imgs(dir_in, area_names, dir_out)
+    save_depth(dir_in, area_names, dir_out)
     save_labels(dir_in, area_names, dir_out)
-    #
-    # len_sub = len(area_names) // cpus
-    # chunks_area_names = [area_names[i:i + len_sub] for i in range(0, len(area_names), len_sub)]
-    # processes = []
-    # for chunk in chunks_area_names:
-    #     print('chunk', len(chunk))
-    #     p = Process(target=save_hha, args=(dir_in, chunk, dir_out))
-    #     p.start()
-    #     processes.append(p)
-    #
-    # for p in processes:
-    #     p.join()
+
+    len_sub = len(area_names) // cpus
+    chunks_area_names = [area_names[i:i + len_sub] for i in range(0, len(area_names), len_sub)]
+    processes = []
+    for chunk in chunks_area_names:
+        print('chunk', len(chunk))
+        p = Process(target=save_hha, args=(dir_in, chunk, dir_out))
+        p.start()
+        processes.append(p)
+
+    for p in processes:
+        p.join()
 
     # save_hha(dir_in, area_names, dir_out)
 

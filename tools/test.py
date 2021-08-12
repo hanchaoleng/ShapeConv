@@ -42,7 +42,6 @@ def main():
 
     runner = TestRunner(test_cfg, inference_cfg, common_cfg)
     runner.load_checkpoint(args.checkpoint)
-    # runner.fuse_shape_weights()
     runner()
 
 

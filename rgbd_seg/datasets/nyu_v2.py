@@ -63,39 +63,10 @@ class DepthPredCrop(object):
         return inputs, target_label
 
 
-class MosaicAug(object):
-    """
-    """
-    def __init__(self, center_range=(0.1, 0.9)):
-        self.center_range = center_range
-
-    def __call__(self, img_label0, img_label1, img_label2, img_label3):
-        h, w, _ = img_label0[0].shape
-        img_h1 = np.concatenate((img_label0[0], img_label1[0]), axis=1)
-        img_h2 = np.concatenate((img_label2[0], img_label3[0]), axis=1)
-        img_v = np.concatenate((img_h1, img_h2), axis=0)
-        label_h1 = np.concatenate((img_label0[1], img_label1[1]), axis=1)
-        label_h2 = np.concatenate((img_label2[1], img_label3[1]), axis=1)
-        label_v = np.concatenate((label_h1, label_h2), axis=0)
-        return img_v, label_v
-        # h, w, _ = img_label0[0].shape
-        # center_y = int(h * random.uniform(self.center_range[0], self.center_range[1]))
-        # center_x = int(w * random.uniform(self.center_range[0], self.center_range[1]))
-        #
-        # img_label0[0][:center_y, center_x:] = img_label1[0][:center_y, center_x:]
-        # img_label0[1][:center_y, center_x:] = img_label1[1][:center_y, center_x:]
-        #
-        # img_label0[0][center_y:, :center_x] = img_label2[0][center_y:, :center_x]
-        # img_label0[1][center_y:, :center_x] = img_label2[1][center_y:, :center_x]
-        #
-        # img_label0[0][center_y:, center_x:] = img_label3[0][center_y:, center_x:]
-        # img_label0[1][center_y:, center_x:] = img_label3[1][center_y:, center_x:]
-        # return img_label0[0], img_label0[1]
-
 @DATASETS.register_module
 class NYUV2Dataset(BaseDataset):
     def __init__(self, root, imglist_name, classes=40, crop_paras=None, channels=None, transform=None,
-                 multi_label=False, mosaic_aug=False):
+                 multi_label=False):
         if multi_label:
             raise ValueError('multi label training is only '
                              'supported by using COCO data form')
@@ -113,10 +84,6 @@ class NYUV2Dataset(BaseDataset):
             self.crop_process = OfficialCrop()
         elif crop_paras['type'] == "depth_pred_crop":
             self.crop_process = DepthPredCrop()
-
-        self.mosaic_process = None
-        if mosaic_aug:
-            self.mosaic_process = MosaicAug((0.1, 0.9))
 
         logger.debug('Total of images is {}'.format(len(self.imglist)))
         self.classes = classes
@@ -163,25 +130,7 @@ class NYUV2Dataset(BaseDataset):
         if self.crop_process:
             img, mask = self.crop_process(img, mask)
 
-        if self.mosaic_process:
-            img1, mask1 = self.random_read()
-            if self.crop_process:
-                img1, mask1 = self.crop_process(img1, mask1)
-
-            img2, mask2 = self.random_read()
-            if self.crop_process:
-                img2, mask2 = self.crop_process(img2, mask2)
-
-            img3, mask3 = self.random_read()
-            if self.crop_process:
-                img3, mask3 = self.crop_process(img3, mask3)
-
-            imgs = np.array([img, img1, img2, img3])
-            masks = np.array([mask, mask1, mask2, mask3])
-            img, mask = self.process(imgs, [masks])
-            # img, mask = self.mosaic_process((img, mask), (img1, mask1), (img2, mask2), (img3, mask3))
-        else:
-            img, mask = self.process(img, [mask])
+        img, mask = self.process(img, [mask])
 
         return img, mask.long()
 

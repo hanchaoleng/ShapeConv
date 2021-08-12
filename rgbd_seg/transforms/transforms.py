@@ -86,55 +86,6 @@ class RandomScale(FactorScale):
 
 
 @TRANSFORMS.register_module
-class RandomMosaicScale(FactorScale):
-    def __init__(self, scale_limit=(0.5, 2), interpolation=cv2.INTER_LINEAR,
-                 scale_step=None, always_apply=False, p=1.0):
-        super(RandomMosaicScale, self).__init__(interpolation=interpolation,
-                                                always_apply=always_apply,
-                                                p=p)
-        self.scale_limit = albu.to_tuple(scale_limit)
-        self.scale_step = scale_step
-
-    def get_params(self):
-        if self.scale_step:
-            num_steps = int((self.scale_limit[1] - self.scale_limit[
-                0]) / self.scale_step + 1)
-            scale_factors = np.linspace(self.scale_limit[0],
-                                        self.scale_limit[1], num_steps)
-            scale_factor = np.random.choice(scale_factors).item()
-        else:
-            scale_factor = random.uniform(self.scale_limit[0],
-                                          self.scale_limit[1])
-
-        return {'scale': scale_factor}
-
-    def apply(self, image, scale=1.0, **params):
-        if scale >= 1.0:
-            return F.scale(image[0], scale, interpolation=self.interpolation)
-        else:
-            h, w, _ = image[0].shape
-            img_h1 = np.concatenate((image[0], image[1]), axis=1)
-            img_h2 = np.concatenate((image[2], image[3]), axis=1)
-            img_v = np.concatenate((img_h1, img_h2), axis=0)
-            img_scaled = F.scale(img_v, scale, interpolation=self.interpolation)
-            return img_scaled[:h, :w, :]
-
-    def apply_to_mask(self, image, scale=1.0, **params):
-        if scale >= 1.0:
-            return F.scale(image[0], scale, interpolation=cv2.INTER_NEAREST)
-        else:
-            h, w = image[0].shape
-            img_h1 = np.concatenate((image[0], image[1]), axis=1)
-            img_h2 = np.concatenate((image[2], image[3]), axis=1)
-            img_v = np.concatenate((img_h1, img_h2), axis=0)
-            img_scaled = F.scale(img_v, scale, interpolation=cv2.INTER_NEAREST)
-            return img_scaled[:h, :w]
-
-    def get_transform_init_args_names(self):
-        return ('scale_limit', 'scale_step',)
-
-
-@TRANSFORMS.register_module
 class PadIfNeeded(albu.PadIfNeeded):
     def __init__(self, min_height, min_width, border_mode=cv2.BORDER_CONSTANT,
                  value=None, mask_value=None):

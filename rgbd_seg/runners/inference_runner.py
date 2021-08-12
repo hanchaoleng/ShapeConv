@@ -35,16 +35,6 @@ class InferenceRunner(Common):
 
         return load_checkpoint(self.model, filename, map_location, strict)
 
-    # def fuse_shape_weights(self):
-    #     def load(module):
-    #         if isinstance(module, ShapeConv2d):
-    #             print('shape')
-    #         for name, child in module._modules.items():
-    #             if child is not None:
-    #                 load(child)
-    #     load(self.model)
-
-
     def _build_model(self, cfg):
         self.logger.info('Build model')
 

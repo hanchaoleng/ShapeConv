@@ -56,8 +56,6 @@ class TestRunner(InferenceRunner):
                     preds = output.cpu().numpy()
                     labels = mask.cpu().numpy()
                     for pred, label in zip(preds, labels):
-                        # if img_id == 15:
-                        #     print(label)
                         pred_rgb = vis_utils.visualize_seg(pred, vis_utils.get_color_map(self.classes),
                                                            self.classes)[0] * 255
                         pred_rgb[label == 255] = np.array((0, 0, 0))
@@ -72,7 +70,6 @@ class TestRunner(InferenceRunner):
                         img.save(path_label_out)
 
                         img_id += 1
-                    # break
 
                 if idx + 1 == len(self.test_dataloader) and self.test_exclude_num > 0:
                     output = output[:-self.test_exclude_num]

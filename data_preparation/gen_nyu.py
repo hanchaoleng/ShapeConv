@@ -147,28 +147,28 @@ def main(dir_meta, dir_out):
     f = h5py.File(path_nyu_depth_v2_labeled)
     print(f.keys())
 
-    # dir_sub_out = os.path.join(dir_out, 'image')
-    # save_imgs(f, dir_sub_out)
+    dir_sub_out = os.path.join(dir_out, 'image')
+    save_imgs(f, dir_sub_out)
 
     dir_sub_out = os.path.join(dir_out, 'depth')
     save_depth(f, dir_sub_out)
 
-    # pth_cam_mats = os.path.join(dir_meta, "camera_rotations_NYU.txt")
-    # dir_sub_out = os.path.join(dir_out, 'hha')
-    # save_hha(f, get_nyu_cam_mats(pth_cam_mats), dir_sub_out)
-    #
-    # pth_map_label40 = os.path.join(dir_meta, "classMapping40.mat")
-    # dir_sub_out = os.path.join(dir_out, 'label40')
-    # save_labels(f, [read_label_map(pth_map_label40)], dir_sub_out)
-    #
+    pth_cam_mats = os.path.join(dir_meta, "camera_rotations_NYU.txt")
+    dir_sub_out = os.path.join(dir_out, 'hha')
+    save_hha(f, get_nyu_cam_mats(pth_cam_mats), dir_sub_out)
+
+    pth_map_label40 = os.path.join(dir_meta, "classMapping40.mat")
+    dir_sub_out = os.path.join(dir_out, 'label40')
+    save_labels(f, [read_label_map(pth_map_label40)], dir_sub_out)
+
     # pth_map_label13 = os.path.join(dir_meta, "class13Mapping.mat")
     # dir_sub_out = os.path.join(dir_out, 'label13')
     # save_labels(f, [read_label_map(pth_map_label40), read_label_map(pth_map_label13)], dir_sub_out)
-    #
-    # pth_splits = os.path.join(dir_meta, "splits.mat")
-    # pth_train = os.path.join(dir_out, 'train.txt')
-    # pth_test = os.path.join(dir_out, 'test.txt')
-    # save_list(pth_splits, pth_train, pth_test)
+
+    pth_splits = os.path.join(dir_meta, "splits.mat")
+    pth_train = os.path.join(dir_out, 'train.txt')
+    pth_test = os.path.join(dir_out, 'test.txt')
+    save_list(pth_splits, pth_train, pth_test)
 
 
 if __name__ == '__main__':
