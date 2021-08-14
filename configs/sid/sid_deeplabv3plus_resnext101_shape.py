@@ -164,11 +164,11 @@ test = dict(
             pin_memory=True,
         ),
     ),
-    tta=dict(
-        scales=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
-        biases=[None, None, None, None, None, None],    # bias may change the size ratio
-        flip=True,
-    ),
+    # tta=dict(
+    #     scales=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
+    #     biases=[None, None, None, None, None, None],    # bias may change the size ratio
+    #     flip=True,
+    # ),
 )
 
 ## 2.2 configuration for train

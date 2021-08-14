@@ -21,9 +21,9 @@
 
 
 ## SID(Stanford Indoor Dataset )
-| Architecture | Backbone | MS & Flip | Shape Conv | mIOU | Config |
-|:---:|:---:|:---:|:---:| :---:| :---:|
-| DeepLabv3plus | ResNet-101 | True | False | 54.55% | [config](../configs/sid/sun_deeplabv3plus_resnext101_baseline.py) |
-| DeepLabv3plus | ResNet-101 | True | True | 60.6% | [config](../configs/sid/sun_deeplabv3plus_resnext101_shape.py) |
+| Architecture | Backbone | MS & Flip | Shape Conv | mIOU | Config | Params |
+|:---:|:---:|:---:|:---:| :---:| :---:| :---:|
+| DeepLabv3plus | ResNet-101 | False | False | 54.55% | [config](../configs/sid/sun_deeplabv3plus_resnext101_baseline.py) | [Google Drive](https://drive.google.com/file/d/1QYGGJe4gqSAT81CxBqpWXZMAz2d3Burg/view?usp=sharing) |
+| DeepLabv3plus | ResNet-101 | False | True | 60.6% | [config](../configs/sid/sun_deeplabv3plus_resnext101_shape.py) | [Google Drive](https://drive.google.com/file/d/1PifdqPSltzUP8193j7O5Do1XL7kqdCZv/view?usp=sharing) |
 
 
