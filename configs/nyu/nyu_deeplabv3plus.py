@@ -92,7 +92,6 @@ inference = dict(
                 dict(
                     type='JunctionBlock',
                     fusion_method='concat',
-                    # fusion_method='add',
                     top_down=dict(
                         from_layer='enhance',
                         adapt_upsample=True,
@@ -176,7 +175,7 @@ test = dict(
         ),
         dataloader=dict(
             type='DataLoader',
-            samples_per_gpu=batch_size_per_gpu // 2,
+            samples_per_gpu=batch_size_per_gpu,
             workers_per_gpu=2,
             shuffle=False,
             drop_last=False,
@@ -205,7 +204,6 @@ train = dict(
                 imglist_name='train.txt',
                 channels=data_channels,
                 multi_label=multi_label,
-                mosaic_aug=False,
             ),
             transforms=[
                 dict(type='RandomScale', scale_limit=(0.5, 2), scale_step=0.25,
@@ -257,7 +255,6 @@ train = dict(
     criterion=dict(type='CrossEntropyLoss', ignore_index=ignore_label),
     optimizer=dict(type='SGD', lr=0.007, momentum=0.9, weight_decay=0.0001),
     lr_scheduler=dict(type='PolyLR', max_epochs=max_epochs, end_lr=0.002),
-    # lr_scheduler=dict(type='RePolyLR', max_epochs=max_epochs, end_lr=0.002, end_point=0.8),
     max_epochs=max_epochs,
     trainval_ratio=10,
     log_interval=10,

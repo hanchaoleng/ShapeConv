@@ -32,7 +32,6 @@ act_cfg = dict(type='Relu', inplace=True)    # Relu, Tlu
 multi_label = False
 
 inference = dict(
-    # gpu_id='',
     gpu_id='0,1,2,3',
     multi_label=multi_label,
     transforms=[
@@ -234,7 +233,6 @@ train = dict(
     criterion=dict(type='CrossEntropyLoss', ignore_index=ignore_label),
     optimizer=dict(type='SGD', lr=0.007, momentum=0.9, weight_decay=0.0001),
     lr_scheduler=dict(type='PolyLR', max_epochs=max_epochs, end_lr=0.002),
-    # lr_scheduler=dict(type='RePolyLR', max_epochs=max_epochs, end_lr=0.002, end_point=0.8),
     max_epochs=max_epochs,
     trainval_ratio=1,
     log_interval=10,
