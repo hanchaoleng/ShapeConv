@@ -26,13 +26,13 @@ if 'depth' in data_channels:
 # img_norm_cfg = dict(mean=norm_mean,
 #                     std=norm_std,
 #                     max_pixel_value=255.0)
-conv_cfg = dict(type='ShapeConv')    # Conv, ShapeConv
+conv_cfg = dict(type='Conv')    # Conv, ShapeConv
 norm_cfg = dict(type='SyncBN')      # 'FRN', 'BN', 'SyncBN', 'GN'
 act_cfg = dict(type='Relu', inplace=True)    # Relu, Tlu
 multi_label = False
 
 inference = dict(
-    gpu_id='4,5,6,7',
+    gpu_id='0,1,2,3',
     multi_label=multi_label,
     transforms=[
         dict(type='PadIfNeeded', min_height=size_h, min_width=size_w,
@@ -45,7 +45,7 @@ inference = dict(
         encoder=dict(
             backbone=dict(
                 type='ResNet',
-                arch='resnext101_32x8d',   # resnext101_32x8d, resnext50_32x4d, resnet152, resnet101, resnet50
+                arch='resnet101',   # resnext101_32x8d, resnext50_32x4d, resnet152, resnet101, resnet50
                 replace_stride_with_dilation=[False, False, True],
                 multi_grid=[1, 2, 4],
                 conv_cfg=conv_cfg,
@@ -77,6 +77,7 @@ inference = dict(
                 dict(
                     type='JunctionBlock',
                     fusion_method='concat',
+                    # fusion_method='add',
                     top_down=dict(
                         from_layer='enhance',
                         adapt_upsample=True,
