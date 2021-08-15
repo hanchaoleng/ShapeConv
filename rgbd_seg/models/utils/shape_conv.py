@@ -108,7 +108,7 @@ class ShapeConv2d(Module):
         return F.conv2d(input, weight, self.bias, self.stride,
                         self.padding, self.dilation, self.groups)
 
-    def compute_shape_w(self, DW_shape):
+    def compute_shape_w(self):
         # (input_channels, D_mul, M * N)
         Shape = self.Shape + self.D_diag  # (1, M * N, self.D_mul)
         Base = self.Base
@@ -119,7 +119,7 @@ class ShapeConv2d(Module):
         # einsum outputs (out_channels // groups, in_channels, M * N),
         # which is reshaped to
         # (out_channels, in_channels // groups, M, N)
-        D_shape = torch.reshape(torch.einsum('ims,ois->oim', Shape, W_shape), DW_shape)
+        D_shape = torch.reshape(torch.einsum('ims,ois->oim', Shape, W_shape), self.weight.shape)
         D_base = torch.reshape(W_base * Base, (self.out_channels, self.in_channels // self.groups, 1, 1))
         DW = D_shape + D_base
         return DW
@@ -127,24 +127,27 @@ class ShapeConv2d(Module):
     def forward(self, input):
         M = self.kernel_size[0]
         N = self.kernel_size[1]
-        DW_shape = (self.out_channels, self.in_channels // self.groups, M, N)
         if M * N > 1 and not self.testing:
-            DW = self.compute_shape_w(DW_shape)
+            DW = self.compute_shape_w()
         else:
-            # in this case D_mul == M * N
-            # reshape from
-            # (out_channels, in_channels // groups, D_mul)
-            # to
-            # (out_channels, in_channels // groups, M, N)
-            DW = torch.reshape(self.weight, DW_shape)
+            DW = self.weight
+        # else:
+        #     # in this case D_mul == M * N
+        #     # reshape from
+        #     # (out_channels, in_channels // groups, D_mul)
+        #     # to
+        #     # (out_channels, in_channels // groups, M, N)
+        #     DW = torch.reshape(self.weight, DW_shape)
         return self._conv_forward(input, DW)
 
     def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
                               missing_keys, unexpected_keys, error_msgs):
-
-        print('load_state_dict')
-        self._load_from_state_dict(state_dict, prefix, local_metadata, strict,
-                                   missing_keys, unexpected_keys, error_msgs)
+        # print('load_state_dict')
+        super(ShapeConv2d, self)._load_from_state_dict(state_dict, prefix, local_metadata, strict,
+                                                       missing_keys, unexpected_keys, error_msgs)
+        # print(self.Shape)
+        if self.kernel_size[0] * self.kernel_size[1] > 1 and self.testing:
+            self.weight.data = self.compute_shape_w()
 
 
 def _ntuple(n):
