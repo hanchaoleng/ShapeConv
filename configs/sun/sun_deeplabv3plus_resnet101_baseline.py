@@ -1,11 +1,11 @@
 import cv2
 
 # 1. configuration for inference
-nclasses = 13
+nclasses = 37
 ignore_label = 255
-size_h = 1080
-size_w = 1080
-batch_size_per_gpu = 1
+size_h = 531
+size_w = 730
+batch_size_per_gpu = 4
 data_channels = ['rgb', 'hha']  # ['rgb', 'hha', 'depth']
 image_pad_value = ()
 norm_mean = ()
@@ -26,8 +26,8 @@ if 'depth' in data_channels:
 # img_norm_cfg = dict(mean=norm_mean,
 #                     std=norm_std,
 #                     max_pixel_value=255.0)
-conv_cfg = dict(type='ShapeConv')    # Conv, ShapeConv
-norm_cfg = dict(type='SyncBN')      # 'FRN', 'BN', 'SyncBN', 'GN'
+conv_cfg = dict(type='Conv')    # Conv, ShapeConv
+norm_cfg = dict(type='BN')      # 'FRN', 'BN', 'SyncBN', 'GN'
 act_cfg = dict(type='Relu', inplace=True)    # Relu, Tlu
 multi_label = False
 
@@ -118,8 +118,8 @@ inference = dict(
 
 # 2. configuration for train/test
 root_workdir = '/home/leon/Summarys'
-dataset_type = 'SIDDataset'
-dataset_root = '/home/leon/Datasets/sid'
+dataset_type = 'SUNDataset'
+dataset_root = '/home/leon/Datasets/sun_rgbd'
 
 common = dict(
     seed=0,
@@ -147,7 +147,8 @@ test = dict(
         dataset=dict(
             type=dataset_type,
             root=dataset_root,
-            imglist_name='test.txt',
+            classes=nclasses,
+            imglist_name='test_list.txt',
             channels=data_channels,
             multi_label=multi_label,
         ),
@@ -158,21 +159,22 @@ test = dict(
         dataloader=dict(
             type='DataLoader',
             samples_per_gpu=batch_size_per_gpu,
-            workers_per_gpu=4,
+            workers_per_gpu=2,
             shuffle=False,
             drop_last=False,
             pin_memory=True,
         ),
     ),
-    # tta=dict(
-    #     scales=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
-    #     biases=[None, None, None, None, None, None],    # bias may change the size ratio
-    #     flip=True,
-    # ),
+    tta=dict(
+        scales=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
+        biases=[None, None, None, None, None, None],    # bias may change the size ratio
+        flip=True,
+    ),
+    # save_pred=True,
 )
 
 ## 2.2 configuration for train
-max_epochs = 100
+max_epochs = 800
 
 train = dict(
     data=dict(
@@ -180,7 +182,7 @@ train = dict(
             dataset=dict(
                 type=dataset_type,
                 root=dataset_root,
-                imglist_name='train.txt',
+                imglist_name='train_list.txt',
                 channels=data_channels,
                 multi_label=multi_label,
             ),
@@ -210,7 +212,7 @@ train = dict(
             dataset=dict(
                 type=dataset_type,
                 root=dataset_root,
-                imglist_name='test.txt',
+                imglist_name='test_list.txt',
                 channels=data_channels,
                 multi_label=multi_label,
             ),
@@ -233,8 +235,8 @@ train = dict(
     optimizer=dict(type='SGD', lr=0.007, momentum=0.9, weight_decay=0.0001),
     lr_scheduler=dict(type='PolyLR', max_epochs=max_epochs, end_lr=0.002),
     max_epochs=max_epochs,
-    trainval_ratio=1,
+    trainval_ratio=10,
     log_interval=10,
-    snapshot_interval=max_epochs,
+    snapshot_interval=1000,
     save_best=True,
 )
