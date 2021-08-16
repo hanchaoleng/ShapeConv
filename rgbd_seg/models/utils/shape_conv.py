@@ -142,10 +142,8 @@ class ShapeConv2d(Module):
 
     def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
                               missing_keys, unexpected_keys, error_msgs):
-        # print('load_state_dict')
         super(ShapeConv2d, self)._load_from_state_dict(state_dict, prefix, local_metadata, strict,
                                                        missing_keys, unexpected_keys, error_msgs)
-        # print(self.Shape)
         if self.kernel_size[0] * self.kernel_size[1] > 1 and self.testing:
             self.weight.data = self.compute_shape_w()
 

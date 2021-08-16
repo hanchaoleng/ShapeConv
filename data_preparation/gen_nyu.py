@@ -161,9 +161,9 @@ def main(dir_meta, dir_out):
     dir_sub_out = os.path.join(dir_out, 'label40')
     save_labels(f, [read_label_map(pth_map_label40)], dir_sub_out)
 
-    # pth_map_label13 = os.path.join(dir_meta, "class13Mapping.mat")
-    # dir_sub_out = os.path.join(dir_out, 'label13')
-    # save_labels(f, [read_label_map(pth_map_label40), read_label_map(pth_map_label13)], dir_sub_out)
+    pth_map_label13 = os.path.join(dir_meta, "class13Mapping.mat")
+    dir_sub_out = os.path.join(dir_out, 'label13')
+    save_labels(f, [read_label_map(pth_map_label40), read_label_map(pth_map_label13)], dir_sub_out)
 
     pth_splits = os.path.join(dir_meta, "splits.mat")
     pth_train = os.path.join(dir_out, 'train.txt')

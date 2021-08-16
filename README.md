@@ -3,7 +3,11 @@ PyTorch implementation of [ShapeConv: Shape-aware Convolutional Layer for RGB-D 
 
 
 ## Introduction
-We design a Shape-aware Convolutional(ShapeConv) layer to explicitly model the shape information for enhancing the RGB-D semantic segmentation accuracy. Specifically, we decompose the depth feature into a shape-component and a value component, after which two learnable weights are introduced to handle the shape and value with differentiation. Extensive experiments on three challenging indoor RGB-D semantic segmentation benchmarks, i.e., NYU-Dv2(-13,-40), SUN RGB-D, and SID, demonstrate the effectiveness of our ShapeConv when employing it over five popular architectures.
+We design a Shape-aware Convolutional(ShapeConv) layer to explicitly 
+model the shape information for enhancing the RGB-D semantic segmentation 
+accuracy. Specifically, we decompose the depth feature into a shape-component 
+and a base-component, after which two learnable weights are introduced to 
+handle the shape and base with differentiation.
 
 ![image](img/shape_conv.png)
 
@@ -31,9 +35,8 @@ pip install -r requirements.txt
 Download the offical dataset and convert to a format appropriate for this project. See [here](./data_preparation).
 
 Or download the converted dataset:
-- [NYU-V2](https://)
-- [SUN-RGBD](https://)
-- [SID](https://)
+- [NYU-V2](https://drive.google.com/file/d/1VrRoWSxMkeJNSM12woiZEG_tN-N8ckj7/view?usp=sharing)
+
 
 ### Evaluation
 1. Model
@@ -52,7 +55,7 @@ See all trained models [here](./model_zoo/README.md).
       `path_to_dataset` represents the path of dataset.
       e.g.,`dataset_root = "/home/shape_conv/nyu_v2"`.
 3. Run
-   1. Ditributed evaluation, please run:
+   1. Distributed evaluation, please run:
     ```shell
    ./tools/dist_test.sh config_path checkpoint_path gpu_num
     ```
@@ -81,7 +84,7 @@ See all trained models [here](./model_zoo/README.md).
       E.g.,`dataset_root = "/home/shape_conv/nyu_v2"`.
 
 2. Run
-    1. Ditributed training
+    1. Distributed training
     ```shell
     ./tools/dist_train.sh config_path gpu_num
     ```
@@ -94,7 +97,7 @@ See all trained models [here](./model_zoo/README.md).
     python tools/train.py config_path
     ```
 ## Result
-For more result, please see [model zoo](./model_zoo/README.md).
+For more result and pre-trained model, please see [model zoo](./model_zoo/README.md).
 ### NYU-V2(40 categories)
 | Architecture | Backbone | MS & Flip | Shape Conv | mIOU |
 |:---:|:---:|:---:|:---:| :---:|
