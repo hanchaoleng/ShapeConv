@@ -22,7 +22,7 @@ class ShapeConv2d(Module):
     __annotations__ = {'bias': Optional[torch.Tensor]}
 
     def __init__(self, in_channels, out_channels, kernel_size, D_mul=None, stride=1,
-                 padding=0, dilation=1, groups=1, bias=True, padding_mode='zeros', testing=False):
+                 padding=0, dilation=1, groups=1, bias=True, padding_mode='zeros'):
         super(ShapeConv2d, self).__init__()
 
         kernel_size = _pair(kernel_size)
@@ -46,8 +46,8 @@ class ShapeConv2d(Module):
         self.dilation = dilation
         self.groups = groups
         self.padding_mode = padding_mode
+        self.testing = not self.training
         self._padding_repeated_twice = tuple(x for x in self.padding for _ in range(2))
-        self.testing = testing
 
         M = self.kernel_size[0]
         N = self.kernel_size[1]
@@ -127,24 +127,19 @@ class ShapeConv2d(Module):
     def forward(self, input):
         M = self.kernel_size[0]
         N = self.kernel_size[1]
-        if M * N > 1 and not self.testing:
+        if M * N > 1 and not self.testing:  # train and val
             DW = self.compute_shape_w()
-        else:
+        else:   # test
             DW = self.weight
-        # else:
-        #     # in this case D_mul == M * N
-        #     # reshape from
-        #     # (out_channels, in_channels // groups, D_mul)
-        #     # to
-        #     # (out_channels, in_channels // groups, M, N)
-        #     DW = torch.reshape(self.weight, DW_shape)
+
         return self._conv_forward(input, DW)
 
     def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
                               missing_keys, unexpected_keys, error_msgs):
+        self.testing = not self.training
         super(ShapeConv2d, self)._load_from_state_dict(state_dict, prefix, local_metadata, strict,
                                                        missing_keys, unexpected_keys, error_msgs)
-        if self.kernel_size[0] * self.kernel_size[1] > 1 and self.testing:
+        if self.kernel_size[0] * self.kernel_size[1] > 1 and not self.training:
             self.weight.data = self.compute_shape_w()
 
 
