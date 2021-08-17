@@ -42,7 +42,7 @@ if 'depth' in data_channels:
 #                     std=norm_std,
 #                     max_pixel_value=255.0)
 conv_cfg = dict(type='ShapeConv')    # Conv, ShapeConv
-norm_cfg = dict(type='BN')      # 'FRN', 'BN', 'SyncBN', 'GN'
+norm_cfg = dict(type='SyncBN')      # 'FRN', 'BN', 'SyncBN', 'GN'
 act_cfg = dict(type='Relu', inplace=True)    # Relu, Tlu
 multi_label = False
 
@@ -256,7 +256,7 @@ train = dict(
     optimizer=dict(type='SGD', lr=0.007, momentum=0.9, weight_decay=0.0001),
     lr_scheduler=dict(type='PolyLR', max_epochs=max_epochs, end_lr=0.002),
     max_epochs=max_epochs,
-    trainval_ratio=1,
+    trainval_ratio=10,
     log_interval=10,
     snapshot_interval=1000,
     save_best=True,
