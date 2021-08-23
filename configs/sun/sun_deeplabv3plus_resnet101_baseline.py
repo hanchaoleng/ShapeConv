@@ -27,7 +27,7 @@ if 'depth' in data_channels:
 #                     std=norm_std,
 #                     max_pixel_value=255.0)
 conv_cfg = dict(type='Conv')    # Conv, ShapeConv
-norm_cfg = dict(type='SyncBN')      # 'FRN', 'BN', 'SyncBN', 'GN'
+norm_cfg = dict(type='BN')      # 'FRN', 'BN', 'SyncBN', 'GN'
 act_cfg = dict(type='Relu', inplace=True)    # Relu, Tlu
 multi_label = False
 

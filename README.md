@@ -1,6 +1,16 @@
-# Shape-aware Convolutional Layer (ShapeConv) 
-PyTorch implementation of [ShapeConv: Shape-aware Convolutional Layer for RGB-D Indoor Semantic Segmentation](https://).
+# ShapeConv: Shape-aware Convolutional Layer for Indoor RGB-D Semantic Segmentation
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/shapeconv-shape-aware-convolutional-layer-for/semantic-segmentation-on-nyu-depth-v2)](https://paperswithcode.com/sota/semantic-segmentation-on-nyu-depth-v2?p=shapeconv-shape-aware-convolutional-layer-for)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/shapeconv-shape-aware-convolutional-layer-for/semantic-segmentation-on-sun-rgbd)](https://paperswithcode.com/sota/semantic-segmentation-on-sun-rgbd?p=shapeconv-shape-aware-convolutional-layer-for)
+
+The official implementation of Shape-aware Convolutional Layer.
+
+> ### [ShapeConv: Shape-aware Convolutional Layer for Indoor RGB-D Semantic Segmentation](https://arxiv.org/abs/2108.10528)
+> [Jinming Cao](https://scholar.google.com/citations?user=GSte8PMAAAAJ), 
+> [Hanchao Leng](https://scholar.google.com/citations?user=sTf4klUAAAAJ), 
+> [Dani Lischinski](https://www.cs.huji.ac.il/~danix/), [Danny Cohen-Or](https://danielcohenor.com/), 
+> [Changhe Tu](https://scholar.google.com/citations?user=AFHJXjcAAAAJ), [Yangyan Li](http://yangyan.li/),
+> *ICCV 2021.*
 
 ## Introduction
 We design a Shape-aware Convolutional(ShapeConv) layer to explicitly 
@@ -118,5 +128,15 @@ For more result and pre-trained model, please see [model zoo](./model_zoo/README
 | DeepLabv3plus | ResNet-101 | False | False | 54.55% |
 | DeepLabv3plus | ResNet-101 | False | True | 60.6% |
 
+## Citation
+If you find this repo useful, please consider citing:
+```
+@article{cao2021shapeconv,
+  title={ShapeConv: Shape-aware Convolutional Layer for Indoor RGB-D Semantic Segmentation},
+  author={Cao, Jinming and Leng, Hanchao and Lischinski, Dani and Cohen-Or, Danny and Tu, Changhe and Li, Yangyan},
+  journal={arXiv preprint arXiv:2108.10528},
+  year={2021}
+}
+```
 ## Acknowledgments
-This repo was developed based on [vedaseg](https://github.com/Media-Smart/vedaseg).
+This repository is heavily based on [vedaseg](https://github.com/Media-Smart/vedaseg).
