@@ -56,8 +56,8 @@ See all trained models [here](./model_zoo/README.md).
    
 2. Config
 
-    Edit config file in `./config`.
-    The config files in `./config` correspond to the model files in `./models`.
+    Edit config file in `./configs`.
+    The config files in `./configs` correspond to the model files in `./model_zoo`.
    1. Set `inference.gpu_id = CUDA_VISIBLE_DEVICES`. 
       `CUDA_VISIBLE_DEVICES` is used to specify which GPUs should be visible to a CUDA application,
       e.g., `inference.gpu_id = "0,1,2,3"`.
@@ -85,7 +85,7 @@ See all trained models [here](./model_zoo/README.md).
 ### Train
 1. Config
 
-    Edit config file in `./config`.
+    Edit config file in `./configs`.
    1. Set `inference.gpu_id = CUDA_VISIBLE_DEVICES`. 
       
       E.g.,`inference.gpu_id = "0,1,2,3"`.
